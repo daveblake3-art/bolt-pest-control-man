@@ -1,37 +1,33 @@
-name: Deploy to GitHub Pages
+name: Enable and Deploy GitHub Pages
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
-  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
-  administration: write
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  enable-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout gh-pages branch
         uses: actions/checkout@v4
         with:
           ref: gh-pages
-      - name: Setup Pages
-        id: setup-pages
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: "."
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
